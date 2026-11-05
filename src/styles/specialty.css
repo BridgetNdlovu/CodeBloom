@@ -1,0 +1,152 @@
+/* ============================================================
+   Uncommon CodeBloom — Achievements, Projects, Progress, Profile, Settings
+   ============================================================ */
+
+.cb-achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--cb-space-5);
+}
+
+.cb-achievement-card {
+  background: var(--cb-white);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius-lg);
+  padding: var(--cb-space-5);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cb-achievement-card.earned {
+  border-color: #bbf7d0;
+  background: linear-gradient(180deg, #ffffff 0%, #f6fef9 100%);
+}
+
+.cb-achievement-badge {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  margin: 0 auto var(--cb-space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8ece7;
+  color: var(--cb-muted);
+}
+
+.cb-achievement-card.earned .cb-achievement-badge {
+  background: radial-gradient(circle at 30% 30%, #d9fbE1, var(--cb-green) 70%);
+  color: var(--cb-white);
+  box-shadow: 0 12px 24px -10px rgba(34, 197, 94, 0.8);
+}
+
+.cb-achievement-card.locked {
+  opacity: 0.75;
+}
+
+.cb-project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--cb-space-5);
+}
+
+.cb-profile-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cb-space-6);
+  align-items: center;
+  background: var(--cb-white);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius-lg);
+  padding: var(--cb-space-6);
+}
+
+.cb-profile-header .cb-character-avatar {
+  border: 4px solid var(--cb-green-soft);
+  background: var(--cb-green-soft);
+}
+
+.cb-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--cb-border);
+  background: var(--cb-white);
+  color: var(--cb-charcoal);
+  cursor: pointer;
+}
+
+.cb-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-space-4);
+  padding: var(--cb-space-4);
+  border-bottom: 1px solid var(--cb-border);
+}
+
+.cb-setting-row:last-child {
+  border-bottom: none;
+}
+
+.cb-setting-row .cb-setting-title {
+  font-weight: 700;
+}
+
+.cb-setting-row .cb-setting-desc {
+  color: var(--cb-muted);
+  font-size: 0.85rem;
+}
+
+.cb-switch {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  flex: none;
+}
+
+.cb-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.cb-switch .cb-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--cb-border-strong);
+  border-radius: var(--cb-radius-pill);
+  transition: background var(--cb-duration-med) ease;
+}
+
+.cb-switch .cb-slider::before {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--cb-white);
+  top: 4px;
+  left: 4px;
+  transition: transform var(--cb-duration-med) ease;
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.cb-switch input:checked + .cb-slider {
+  background: var(--cb-green);
+}
+
+.cb-switch input:checked + .cb-slider::before {
+  transform: translateX(22px);
+}
+
+@media (max-width: 700px) {
+  .cb-profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+}

@@ -1,0 +1,109 @@
+/* ============================================================
+   Uncommon CodeBloom — Mission Map Styles
+   ============================================================ */
+
+.cb-mission-map {
+  background: linear-gradient(180deg, #f0fdf4 0%, var(--cb-bg-warm) 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: var(--cb-radius-lg);
+  padding: var(--cb-space-6);
+}
+
+.cb-mission-map-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-space-4);
+  margin-bottom: var(--cb-space-6);
+}
+
+.cb-mission-map-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-3);
+  min-width: 220px;
+}
+
+.cb-mission-path {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-space-6);
+  max-width: 560px;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.cb-mission-node-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cb-space-2);
+}
+
+.cb-mission-node {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cb-white);
+  border: 4px solid var(--cb-border-strong);
+  color: var(--cb-muted);
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.cb-mission-node.available {
+  border-color: var(--cb-green);
+  background: var(--cb-green);
+  color: var(--cb-white);
+  box-shadow: 0 10px 20px -8px rgba(34, 197, 94, 0.7);
+}
+
+.cb-mission-node.completed {
+  border-color: var(--cb-green-dark);
+  background: var(--cb-green-dark);
+  color: var(--cb-white);
+}
+
+.cb-mission-node-label {
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.cb-mission-node-skill {
+  font-size: 0.78rem;
+  color: var(--cb-muted);
+  font-weight: 600;
+}
+
+.cb-mission-node-connector {
+  width: 4px;
+  height: 28px;
+  background: var(--cb-border-strong);
+  border-radius: 4px;
+}
+
+.cb-mission-node-connector.done {
+  background: var(--cb-green);
+}
+
+/* Locked node */
+.cb-mission-node.locked {
+  border-style: dashed;
+}
+
+/* ---------- Mission map responsive ---------- */
+
+@media (max-width: 600px) {
+  .cb-mission-map {
+    padding: var(--cb-space-4);
+  }
+
+  .cb-mission-node {
+    width: 60px;
+    height: 60px;
+  }
+}

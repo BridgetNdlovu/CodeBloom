@@ -1,0 +1,220 @@
+/* ============================================================
+   Uncommon CodeBloom — Auth Screens Styles
+   ============================================================ */
+
+.cb-auth-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  min-height: calc(100vh - 68px);
+}
+
+.cb-auth-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--cb-space-8) var(--cb-space-6);
+}
+
+.cb-auth-card {
+  width: 100%;
+  max-width: 460px;
+}
+
+.cb-auth-card h1 {
+  font-size: 2.1rem;
+}
+
+.cb-auth-card .cb-body-text {
+  margin-bottom: var(--cb-space-6);
+}
+
+.cb-auth-alt {
+  text-align: center;
+  margin-top: var(--cb-space-6);
+  font-size: 0.92rem;
+  color: var(--cb-muted);
+}
+
+.cb-auth-alt a {
+  font-weight: 700;
+}
+
+.cb-auth-side {
+  background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 60%, #dcfce7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cb-space-5);
+  padding: var(--cb-space-8);
+  text-align: center;
+  border-left: 1px solid var(--cb-border);
+}
+
+.cb-auth-side h2 {
+  font-size: 1.8rem;
+  max-width: 14ch;
+}
+
+.cb-auth-side p {
+  color: var(--cb-green-ink);
+  max-width: 40ch;
+  marginBottom: 0;
+}
+
+.cb-auth-side img {
+  max-height: 300px;
+  width: auto;
+}
+
+/* Character picker */
+
+.cb-char-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cb-space-3);
+}
+
+.cb-char-option {
+  position: relative;
+  border: 3px solid var(--cb-border);
+  background: var(--cb-white);
+  border-radius: var(--cb-radius-lg);
+  padding: var(--cb-space-4) var(--cb-space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cb-space-2);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color var(--cb-duration-fast) ease, box-shadow var(--cb-duration-fast) ease, transform var(--cb-duration-fast) ease;
+}
+
+.cb-char-option:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cb-shadow-md);
+}
+
+.cb-char-option.selected {
+  border-color: var(--cb-green);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+  background: #f7fef9;
+}
+
+.cb-char-option img {
+  height: 110px;
+  width: auto;
+  max-width: 100%;
+}
+
+.cb-char-option .cb-char-name {
+  font-weight: 800;
+  color: var(--cb-charcoal);
+}
+
+.cb-char-option .cb-char-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--cb-green);
+  color: var(--cb-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .cb-auth-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cb-auth-side {
+    display: none;
+  }
+}
+
+/* Account type picker */
+
+.cb-account-type-picker {
+  margin-bottom: var(--cb-space-8);
+}
+
+.cb-account-type-question {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 var(--cb-space-4) 0;
+  color: var(--cb-charcoal);
+}
+
+.cb-account-type-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cb-space-4);
+  margin-bottom: var(--cb-space-3);
+}
+
+.cb-account-card {
+  border: 2px solid var(--cb-border);
+  background: var(--cb-white);
+  border-radius: var(--cb-radius-lg);
+  padding: var(--cb-space-5) var(--cb-space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cb-space-3);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color var(--cb-duration-fast) ease, box-shadow var(--cb-duration-fast) ease, transform var(--cb-duration-fast) ease;
+}
+
+.cb-account-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cb-shadow-md);
+}
+
+.cb-account-card.selected {
+  border-color: var(--cb-green);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+  background: #f7fef9;
+}
+
+.cb-account-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cb-account-card h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--cb-charcoal);
+}
+
+.cb-account-card-description {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--cb-muted);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.cb-account-card-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--cb-green);
+  color: var(--cb-white);
+}
+
+.cb-account-type-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--cb-muted);
+  text-align: center;
+}
