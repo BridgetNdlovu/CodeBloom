@@ -37,10 +37,66 @@ Copy `.env.example` to `.env.local` and confirm the backend URL:
 copy .env.example .env.local
 ```
 
-Default: `VITE_API_BASE_URL=http://localhost:5202`
+For local development, `.env.example` uses
+`VITE_API_BASE_URL=http://localhost:5202`. This local URL is never used as a
+production fallback. A production build requires an explicit HTTPS API URL.
 
 The API must allow the frontend origin through CORS. The checked-in backend
-configuration allows `http://localhost:5173` and `http://127.0.0.1:5173`.
+configuration allows only the local Vite origins.
+
+### Deploying the frontend to Vercel
+
+The Vercel frontend cannot reach `localhost:5202`. Publish the ASP.NET Core API to
+your Somee Windows/IIS website, configure its SQL connection using the database
+endpoint from the Somee control panel, and then set the public API URL in Vercel.
+Somee's current Windows plan information lists ASP.NET Core 10; the API is published
+as a folder, not as the local Docker image. See the backend README for publish,
+configuration and database migration instructions. Do not share Somee passwords or
+database credentials in chat. In the Vercel project, open
+**Settings → Environment Variables** and add:
+
+| Name | Value |
+|---|---|
+| `VITE_API_BASE_URL` | `https://codebloom-api.somee.com` (after `/health` is reachable) |
+
+Set the value to the Somee HTTPS hostname without `/api`. Select
+**Production** (and **Preview** if preview deployments should use the API), save, then
+trigger a new Vercel deployment. Vite embeds `VITE_*` variables at build time.
+If the value is missing, malformed, HTTP-only, or points to localhost, the deployed
+app now displays a configuration error instead of silently calling a local URL.
+The older message `Could not reach the CodeBloom API at http://localhost:5202`
+comes from a bundle that still attempts the request, so it indicates an older
+deployment or cached page rather than the current production URL guard.
+Verify that opening `https://codebloom-api.somee.com/health` returns a healthy
+response before switching Vercel. The account dashboard reports the site and SSL
+as active, but an external check on 2026-11-06 resolved the hostname and had its
+HTTPS connection reset, so public API readiness is not confirmed yet.
+
+The API host must allow the exact Vercel frontend origin via
+`Cors:AllowedOrigins` (environment variable `Cors__AllowedOrigins__0`); make sure the
+production configuration includes the deployed frontend origin and does not rely on
+the local-only origins from the base settings. Since
+authentication uses credentialed HttpOnly cookies, HTTPS and compatible cookie
+same-site behavior are also required. Prefer hosting the frontend and API on
+same-site custom domains (such as `app.example.com` and `api.example.com`); unrelated
+domains can have cross-site cookies blocked by browsers.
+
+If the live site still shows `Could not reach the CodeBloom API at
+http://localhost:5202`, it is serving an old frontend bundle. Check Vercel's
+Production `VITE_API_BASE_URL`, ensure the latest deployment is Ready and attached
+to the production domain, redeploy, then hard-refresh or try a private window. The
+current frontend rejects localhost before making a request.
+
+The API host connects to Somee SQL Server using the private values from your Somee
+panel. The hostname supplied for this deployment is
+`https://codebloom-api.somee.com`; the SQL endpoint and credentials are available
+only in your Somee panel. Do not guess or send them in chat. For cookie-based login across
+the default Vercel and Somee domains, the API can set `Auth__CookieSameSite=None`
+over HTTPS, but browser third-party-cookie restrictions may still block login.
+Same-site custom domains for frontend and API are more reliable.
+
+For local development only, the API README retains Docker instructions. Somee shared
+hosting uses Windows/IIS folder publishing; do not upload the Docker image there.
 
 ### 3. Run the development server
 
@@ -143,9 +199,10 @@ local mock data or persists learner progress in browser storage.
 
 ## Backend API
 
-The frontend expects the ASP.NET Core Web API at `VITE_API_BASE_URL`
-(default `http://localhost:5202`). See `../uncommon-code-bloom-api/README.md` for
-database, migration, launch and configuration instructions.
+The frontend expects the ASP.NET Core Web API at `VITE_API_BASE_URL` (local
+development default `http://localhost:5202`; production requires an explicit HTTPS
+URL). See `../uncommon-code-bloom-api/README.md` for database, migration, launch and
+configuration instructions.
 
 ## Current limitations
 

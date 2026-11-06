@@ -1,5 +1,46 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5202";
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const API_BASE_URL = configuredApiBaseUrl
+  ? configuredApiBaseUrl.replace(/\/+$/, "")
+  : import.meta.env.PROD
+    ? ""
+    : "http://localhost:5202";
+
+function getApiConfigurationError(): string | null {
+  if (!API_BASE_URL) {
+    return (
+      "The production API URL is not configured. In Vercel, open Project Settings > " +
+      "Environment Variables and set VITE_API_BASE_URL to your deployed ASP.NET Core " +
+      "API base URL, then redeploy the frontend."
+    );
+  }
+
+  if (!import.meta.env.PROD) return null;
+
+  let url: URL;
+  try {
+    url = new URL(API_BASE_URL);
+  } catch {
+    return "VITE_API_BASE_URL must be an absolute HTTPS URL for the deployed CodeBloom API.";
+  }
+
+  if (url.protocol !== "https:") {
+    return "VITE_API_BASE_URL must use HTTPS in production.";
+  }
+
+  if (
+    url.hostname === "localhost" ||
+    url.hostname.endsWith(".localhost") ||
+    url.hostname === "127.0.0.1" ||
+    url.hostname === "::1" ||
+    url.hostname === "[::1]"
+  ) {
+    return "VITE_API_BASE_URL points to localhost, which is not reachable by visitors to the deployed site. Configure the publicly reachable HTTPS API URL in Vercel and redeploy.";
+  }
+
+  return null;
+}
+
+const API_CONFIGURATION_ERROR = getApiConfigurationError();
 
 /** Error thrown by every API helper. `status` is the HTTP status code. */
 export class ApiError extends Error {
@@ -29,6 +70,10 @@ async function request<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  if (API_CONFIGURATION_ERROR) {
+    throw new ApiError(API_CONFIGURATION_ERROR, 0);
+  }
+
   const url = path.startsWith("http") ? path : `${API_BASE_URL}${path}`;
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -44,8 +89,10 @@ async function request<T>(
     });
   } catch {
     throw new ApiError(
-      `Could not reach the CodeBloom API at ${API_BASE_URL}. Start the backend ` +
-        `(cd uncommon-code-bloom-api; dotnet run) and check that VITE_API_BASE_URL in .env.local points to it.`,
+      `Could not reach the CodeBloom API at ${API_BASE_URL}. Confirm that the API is ` +
+        "running and publicly reachable over HTTPS, and that its CORS allowed origins " +
+        "include this frontend's exact origin. If frontend and API are on different " +
+        "sites, authentication cookies may also require a same-site custom domain.",
       0,
     );
   }
