@@ -46,8 +46,6 @@ export function GameLibrary() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError(null);
     Promise.all([getGames(), getGamesProgress()])
       .then(([catalogue, progressRows]) => {
         if (cancelled) return;

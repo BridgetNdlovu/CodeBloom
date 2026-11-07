@@ -148,7 +148,7 @@ export function projectFromGame(game: GameSource): GameProject {
 /** Parse a saved project from StudentProject.Content. */
 export function parseGameProject(content: string | null | undefined): GameProject | null {
   if (!content) return null;
-  let raw: Partial<GameProject> | null = null;
+  let raw: Partial<GameProject>;
   try {
     const parsed = JSON.parse(content) as Partial<GameProject>;
     if (!parsed || parsed.format !== "codebloom.project.v1") return null;

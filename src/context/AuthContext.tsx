@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- Provider and hook share one context. */
 import {
   createContext,
   useCallback,
@@ -15,6 +16,7 @@ interface AuthContextValue {
   learner: Learner | null;
   loading: boolean;
   signIn: (input: LoginInput) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   register: (input: RegisterInput) => Promise<void>;
   signOut: () => Promise<void>;
   /** Re-fetch the current learner from the API. */
@@ -31,14 +33,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    authService
-      .getCurrentLearner()
-      .then((current) => {
-        if (!cancelled) setLearner(current);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+    void (async () => {
+      // If the browser is returning from a Google redirect sign-in, exchange the
+      // Firebase ID token first. Otherwise use the existing CodeBloom cookie.
+      const redirected = await authService.completeFirebaseRedirect();
+      const current = redirected ?? (await authService.getCurrentLearner());
+      if (!cancelled) setLearner(current);
+    })().finally(() => {
+      if (!cancelled) setLoading(false);
+    });
     return () => {
       cancelled = true;
     };
@@ -47,6 +50,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = useCallback(async (input: LoginInput) => {
     const result = await authService.loginLearner(input);
     setLearner(result);
+  }, []);
+
+  const signInWithGoogle = useCallback(async () => {
+    const result = await authService.signInWithGoogle();
+    if (result) setLearner(result);
   }, []);
 
   const register = useCallback(async (input: RegisterInput) => {
@@ -70,8 +78,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ learner, loading, signIn, register, signOut, refresh, updateLearner }),
-    [learner, loading, signIn, register, signOut, refresh, updateLearner],
+    () => ({
+      learner,
+      loading,
+      signIn,
+      signInWithGoogle,
+      register,
+      signOut,
+      refresh,
+      updateLearner,
+    }),
+    [
+      learner,
+      loading,
+      signIn,
+      signInWithGoogle,
+      register,
+      signOut,
+      refresh,
+      updateLearner,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

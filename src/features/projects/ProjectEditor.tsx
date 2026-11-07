@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, Trash2, Wand2 } from "lucide-react";
+import { ArrowLeft, Save, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { ErrorMessage, Field, PageHeader, TextInput } from "../../components/ui/inputs";
 import { SceneStage } from "../../components/game/SceneStage";
@@ -154,12 +154,6 @@ export function ProjectEditor() {
                 <ArrowLeft size={16} aria-hidden />
                 Back to projects
               </Link>
-              {!isNew ? (
-                <Link to={`/app/studio/${numericId}`} className="cb-btn cb-btn-primary cb-btn-sm">
-                  <Wand2 size={16} aria-hidden />
-                  Open in Game Studio
-                </Link>
-              ) : null}
             </>
           }
         />
@@ -213,20 +207,15 @@ export function ProjectEditor() {
               <div>
                 <h3>This is a CodeBloom game project</h3>
                 <p className="cb-body-text">
-                  Sprites, backgrounds and blocks live in the Game Studio so the game
-                  stays runnable. Use the button below to keep building, or update
-                  the title and description here. Saving this form keeps the game
-                  content unchanged.
+                  This saved game project is kept for reference. Learners now play
+                  ready-made games from the Game Library; its saved game content is
+                  preserved when you update the title or description here.
                 </p>
                 <ul className="cb-project-game-facts">
                   <li>{gameProject.scene.sprites.length} sprites</li>
                   <li>{gameProject.scene.sprites.filter((s) => s.role === "collectible").length} collectibles</li>
                   <li>Win: {gameProject.scene.rules.win.type.replace("_", " ")}</li>
                 </ul>
-                <Link to={`/app/studio/${numericId}`} className="cb-btn cb-btn-primary cb-btn-sm">
-                  <Wand2 size={16} aria-hidden />
-                  Open in Game Studio
-                </Link>
               </div>
             </div>
           ) : (

@@ -185,6 +185,26 @@ export async function loginUser(
   });
 }
 
+/**
+ * Sends a Firebase ID token to the API. The server verifies it with the Firebase
+ * Admin SDK, resolves the role from SQL Server and sets the usual HttpOnly cookie.
+ */
+export async function exchangeFirebaseToken(
+  idToken: string,
+): Promise<{ user: AuthUser; expiresAt: string; provider: string }> {
+  return api.post("/api/auth/firebase", { idToken });
+}
+
+export interface FirebaseStatus {
+  provider: "firebase";
+  enabled: boolean;
+  reason: string | null;
+}
+
+export async function getFirebaseStatus(): Promise<FirebaseStatus> {
+  return api.get("/api/auth/firebase/status");
+}
+
 export async function logoutUser(): Promise<void> {
   await api.post("/api/auth/logout");
 }

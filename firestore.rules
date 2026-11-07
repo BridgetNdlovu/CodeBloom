@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// CodeBloom keeps all application records in SQL Server. Firestore is not used
+// by the current release, so every client read and write is denied by default.
+//
+// If real-time mission notifications are added later, create the narrowest
+// possible rule for that collection (for example, authenticated users may read
+// only their own notification documents) and let the ASP.NET Core API perform
+// all writes with the Firebase Admin SDK. Never allow unrestricted access.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -21,7 +21,7 @@
 
 .cb-dash-welcome p {
   color: var(--cb-muted);
-  marginBottom: 0;
+  margin-bottom: 0;
 }
 
 .cb-dash-welcome-art {
@@ -30,7 +30,7 @@
 }
 
 .cb-dash-welcome-art img {
-  max-height: 220px;
+  max-height: 190px;
   width: auto;
   max-width: 100%;
 }
@@ -47,6 +47,14 @@
   font-weight: 600;
   color: var(--cb-green-ink);
   box-shadow: var(--cb-shadow-sm);
+}
+
+.cb-dash-character-message .cb-character-img {
+  flex: none;
+  width: auto;
+  max-height: 56px;
+  max-width: 56px;
+  object-fit: contain;
 }
 
 .cb-stat-grid {
@@ -103,7 +111,7 @@
 }
 
 .cb-featured-mission .cb-featured-art img {
-  max-height: 180px;
+  max-height: 160px;
   width: auto;
   max-width: 90%;
 }
@@ -159,5 +167,23 @@
 @media (max-width: 480px) {
   .cb-stat-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cb-dash-welcome {
+    padding: var(--cb-space-4);
+  }
+
+  .cb-dash-welcome-art img {
+    max-height: 140px;
+  }
+
+  .cb-dash-character-message {
+    width: 100%;
+    font-size: 0.88rem;
+  }
+
+  .cb-dash-section-head {
+    flex-wrap: wrap;
+    gap: 4px;
   }
 }

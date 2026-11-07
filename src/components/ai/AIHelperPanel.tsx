@@ -32,12 +32,6 @@ export function AIHelperPanel({
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (open) {
-      setError(undefined);
-    }
-  }, [open]);
-
-  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, thinking, open]);
 

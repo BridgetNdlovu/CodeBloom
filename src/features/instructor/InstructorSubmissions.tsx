@@ -50,6 +50,7 @@ export function InstructorSubmissions() {
   useEffect(() => {
     if (!validId) return;
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Assignment ID changes and reloads need a visible pending state.
     setLoading(true);
     setError(undefined);
     async function load() {

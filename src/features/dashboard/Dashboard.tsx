@@ -32,6 +32,7 @@ export function Dashboard() {
 
   useEffect(() => {
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Show pending state for explicit reloads.
     setLoading(true);
     setError(undefined);
     async function load() {

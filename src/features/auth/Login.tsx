@@ -1,17 +1,19 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { ErrorMessage, Field, PasswordInput, TextInput } from "../../components/ui/inputs";
 import { CharacterIllustration } from "../../components/character/Character";
+import { GoogleMark } from "../../components/auth/GoogleMark";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 import { AuthError } from "../../services/authService";
+import { firebaseConfigured } from "../../services/firebase";
 import { LoadingState } from "../../components/ui/inputs";
 
 export function Login() {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { learner, signIn, signInWithGoogle } = useAuth();
   const { toast } = useToast();
 
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -19,6 +21,12 @@ export function Login() {
   const [errors, setErrors] = useState<{ usernameOrEmail?: string; password?: string }>({});
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Covers the redirect-based Google flow and already-signed-in visitors.
+  useEffect(() => {
+    if (learner) navigate("/app", { replace: true });
+  }, [learner, navigate]);
 
   const validate = (): boolean => {
     const next: { usernameOrEmail?: string; password?: string } = {};
@@ -48,6 +56,22 @@ export function Login() {
       setFormError(message);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setFormError(undefined);
+    setGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      setFormError(
+        error instanceof AuthError
+          ? error.message
+          : "Google sign-in could not be completed. Please try again.",
+      );
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -108,6 +132,27 @@ export function Login() {
                 </Button>
               </form>
             )}
+
+            {firebaseConfigured ? (
+              <>
+                <div className="cb-auth-divider" aria-hidden>
+                  <span>or</span>
+                </div>
+                <button
+                  type="button"
+                  className="cb-google-button"
+                  onClick={() => void handleGoogleSignIn()}
+                  disabled={googleLoading || submitting}
+                >
+                  <GoogleMark />
+                  {googleLoading ? "Connecting to Google…" : "Continue with Google"}
+                </button>
+                <p className="cb-auth-note">
+                  Students can sign in with Google. Existing instructor and administrator
+                  accounts keep the role assigned in CodeBloom.
+                </p>
+              </>
+            ) : null}
 
             <p className="cb-auth-alt">
               New to CodeBloom? <Link to="/register">Create an account</Link>

@@ -1,5 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import type { ReactElement } from "react";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Landing } from "./features/landing/Landing";
 import { Login } from "./features/auth/Login";
 import { Register } from "./features/auth/Register";
@@ -29,7 +28,6 @@ import { JoinClass } from "./features/instructor/JoinClass";
 import { AdminDashboard } from "./features/admin/AdminDashboard";
 import { GameLibrary } from "./features/games/GameLibrary";
 import { GamePlayer } from "./features/games/GamePlayer";
-import { GameStudio } from "./features/games/GameStudio";
 import type { UserRole } from "./types";
 
 const STUDENT_ROLES: UserRole[] = ["student"];
@@ -121,7 +119,7 @@ export const router = createBrowserRouter([
         path: "studio",
         element: (
           <RequireRole allowedRoles={STUDENT_ROLES}>
-            <GameStudio />
+            <Navigate to="/app/games" replace />
           </RequireRole>
         ),
       },
@@ -129,7 +127,7 @@ export const router = createBrowserRouter([
         path: "studio/:projectId",
         element: (
           <RequireRole allowedRoles={STUDENT_ROLES}>
-            <GameStudio />
+            <Navigate to="/app/games" replace />
           </RequireRole>
         ),
       },
@@ -260,7 +258,3 @@ export const router = createBrowserRouter([
     element: <NotFound />,
   },
 ]);
-
-export function AppRoutes(): ReactElement {
-  return <RouterProvider router={router} />;
-}

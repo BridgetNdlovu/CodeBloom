@@ -155,7 +155,17 @@ const BLOCKS: unknown[] = [
 
   // Control --------------------------------------------------------------
   statementBlock("cb_wait", "wait %1 seconds", [NUMBER_FIELD("SECONDS", 0.5, 0, 5, 0.1)], 30),
-  statementBlock("cb_repeat", "repeat %1 times", [NUMBER_FIELD("TIMES", 3, 1, 50, 1)], 30),
+  {
+    type: "cb_repeat",
+    message0: "repeat %1 times",
+    args0: [NUMBER_FIELD("TIMES", 3, 1, 50, 1)],
+    message1: "do %1",
+    args1: [{ type: "input_statement", name: "DO" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 30,
+    tooltip: "Repeat the blocks inside this many times.",
+  },
   {
     type: "cb_repeat_until",
     message0: "repeat until %1",

@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// Existing mascots, game art and backgrounds are served from the Vite `public`
+// folder, so Firebase Storage is not used by the current release. Deny by
+// default until a reviewed asset-upload feature is added.
+//
+// If Storage is enabled later, prefer public read only for an explicit
+// `public-assets/` prefix and require authenticated, size/type-checked writes.
+// Student-uploaded projects must never be world-readable by default.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

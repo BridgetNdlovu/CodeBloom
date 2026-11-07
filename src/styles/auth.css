@@ -218,3 +218,72 @@
   color: var(--cb-muted);
   text-align: center;
 }
+
+/* ------------------------------------------------------------------
+   Optional Firebase / Google sign-in
+   ------------------------------------------------------------------ */
+.cb-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-3);
+  margin: var(--cb-space-5) 0 var(--cb-space-4);
+  color: var(--cb-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cb-auth-divider::before,
+.cb-auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--cb-border);
+}
+
+.cb-google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cb-space-3);
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--cb-border-strong);
+  border-radius: var(--cb-radius-md);
+  background: var(--cb-white);
+  color: var(--cb-charcoal);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--cb-duration-fast) ease,
+    box-shadow var(--cb-duration-fast) ease, transform var(--cb-duration-fast) ease;
+}
+
+.cb-google-button:hover:not(:disabled) {
+  border-color: var(--cb-boy);
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.cb-google-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.cb-google-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--cb-boy) 30%, transparent);
+  outline-offset: 2px;
+}
+
+.cb-google-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.cb-auth-note {
+  margin: var(--cb-space-3) 0 0;
+  color: var(--cb-muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  text-align: center;
+}

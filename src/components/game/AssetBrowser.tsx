@@ -51,6 +51,7 @@ export function AssetBrowser({
   const [role, setRole] = useState<SpriteRole>("decoration");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Opening the drawer syncs its tab to the parent's selected section.
     if (open) setTab(initialTab);
   }, [open, initialTab]);
 

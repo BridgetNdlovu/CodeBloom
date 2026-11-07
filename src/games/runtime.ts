@@ -76,12 +76,10 @@ export async function createGame(
   options: GameOptions,
 ): Promise<GameController> {
   const scene = new CodeBloomScene(options);
-  let controller: CodeBloomController | null = null;
+  const controller = new CodeBloomController(scene, options);
 
   await new Promise<void>((resolve) => {
     scene.onReady = resolve;
-    controller = new CodeBloomController(scene, options);
-    scene.attachController(controller);
     new Phaser.Game({
       type: Phaser.AUTO,
       parent: container,
@@ -104,8 +102,7 @@ export async function createGame(
     });
   });
 
-  if (!controller) throw new Error("The game did not start.");
-  (controller as CodeBloomController).attachGame(scene.game);
+  controller.attachGame(scene.game);
   return controller;
 }
 
@@ -260,10 +257,6 @@ class CodeBloomScene extends Phaser.Scene implements GameHost {
     this.character = options.character;
   }
 
-  attachController(_controller: CodeBloomController): void {
-    /* Controller is created and tracked by createGame. */
-  }
-
   preload(): void {
     this.load.image("hero-girl", "/girl_transparent.png");
     this.load.image("hero-boy", "/boy_transparent.png");
@@ -374,6 +367,13 @@ class CodeBloomScene extends Phaser.Scene implements GameHost {
     this.beginPlay();
     await runProgram(program, this);
     this.running = false;
+    if (
+      !this.cancelledFlag &&
+      !this.isFinished() &&
+      this.message === "Running your blocks…"
+    ) {
+      this.setMessage("Program finished. Reach the goal to complete the mission!");
+    }
   }
 
   isFinished(): boolean {
@@ -1079,7 +1079,7 @@ class CodeBloomScene extends Phaser.Scene implements GameHost {
     else body.setVelocityX(body.velocity.x * 0.75);
 
     if (jump && body.blocked.down) {
-      body.setVelocityY(-430);
+      body.setVelocityY(-500);
       this.playTone(520, 0.08, "square");
     }
   }
@@ -1302,7 +1302,7 @@ class CodeBloomScene extends Phaser.Scene implements GameHost {
   // Game loop / shared rules
   // ------------------------------------------------------------------
 
-  update(_time: number, _delta: number): void {
+  update(): void {
     if (this.cancelledFlag) return;
 
     if (this.status === "running" && this.timeLimit !== null && this.startedAt > 0) {
@@ -1569,7 +1569,7 @@ class CodeBloomScene extends Phaser.Scene implements GameHost {
     if (this.options.level.kind === "platformer") {
       const body = this.hero?.body as Phaser.Physics.Arcade.Body | undefined;
       if (body?.blocked.down) {
-        body.setVelocityY(-430);
+        body.setVelocityY(-500);
         this.playTone(520, 0.08, "square");
       }
       await this.delay(420);

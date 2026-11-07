@@ -57,7 +57,9 @@ function GameBlockWorkspaceInner(
   const loadedRef = useRef<string>("");
   const suppressRef = useRef(false);
   const dirtyRef = useRef(onDirty);
-  dirtyRef.current = onDirty;
+  useEffect(() => {
+    dirtyRef.current = onDirty;
+  }, [onDirty]);
 
   useEffect(() => {
     ensureGameBlocks();
@@ -89,14 +91,6 @@ function GameBlockWorkspaceInner(
     };
     workspace.addChangeListener(onChange);
 
-    const initial = initialXml ?? starterXmlFor(mode);
-    suppressRef.current = true;
-    loadXml(workspace, initial);
-    loadedRef.current = initial;
-    window.setTimeout(() => {
-      suppressRef.current = false;
-    }, 0);
-
     const observer = new ResizeObserver(() => Blockly.svgResize(workspace));
     observer.observe(container);
     const timer = window.setTimeout(() => Blockly.svgResize(workspace), 80);
@@ -110,8 +104,20 @@ function GameBlockWorkspaceInner(
       loadedRef.current = "";
     };
     // Rebuild when the mission/mode changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, readOnly]);
+
+  useEffect(() => {
+    const workspace = workspaceRef.current;
+    if (!workspace) return;
+    const initial = initialXml ?? starterXmlFor(mode);
+    if (initial === loadedRef.current) return;
+    suppressRef.current = true;
+    loadXml(workspace, initial);
+    loadedRef.current = initial;
+    window.setTimeout(() => {
+      suppressRef.current = false;
+    }, 0);
+  }, [initialXml, mode]);
 
   useImperativeHandle(
     ref,

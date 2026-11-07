@@ -1,12 +1,14 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Check, Mail, ShieldCheck, User, Lock, Sparkles } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { ErrorMessage, Field, PasswordInput, TextInput } from "../../components/ui/inputs";
 import { CharacterIllustration } from "../../components/character/Character";
+import { GoogleMark } from "../../components/auth/GoogleMark";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 import { AuthError } from "../../services/authService";
+import { firebaseConfigured } from "../../services/firebase";
 import type { CharacterPreference, AgeGroup } from "../../types";
 
 const AGE_GROUPS: Array<{ value: AgeGroup; label: string }> = [
@@ -19,7 +21,7 @@ type AccountType = "student" | "instructor";
 
 export function Register() {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { learner, register, signInWithGoogle } = useAuth();
   const { toast } = useToast();
 
   const [accountType, setAccountType] = useState<AccountType>("student");
@@ -33,6 +35,12 @@ export function Register() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Covers the redirect-based Google flow and already-signed-in visitors.
+  useEffect(() => {
+    if (learner) navigate("/app", { replace: true });
+  }, [learner, navigate]);
 
   const selectAccountType = (type: AccountType) => {
     setAccountType(type);
@@ -77,6 +85,23 @@ export function Register() {
       setFormError(message);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    setFormError(undefined);
+    setGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+      toast("Welcome to CodeBloom! You can personalise your character in Profile.");
+    } catch (error) {
+      setFormError(
+        error instanceof AuthError
+          ? error.message
+          : "Google sign-up could not be completed. Please try again.",
+      );
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -271,6 +296,27 @@ export function Register() {
                 {submitting ? "Creating your account…" : "Create Account"}
               </Button>
             </form>
+
+            {isStudent && firebaseConfigured ? (
+              <>
+                <div className="cb-auth-divider" aria-hidden>
+                  <span>or</span>
+                </div>
+                <button
+                  type="button"
+                  className="cb-google-button"
+                  onClick={() => void handleGoogleSignUp()}
+                  disabled={googleLoading || submitting}
+                >
+                  <GoogleMark />
+                  {googleLoading ? "Connecting to Google…" : "Sign up with Google"}
+                </button>
+                <p className="cb-auth-note">
+                  Google creates a student account with a default character and age group.
+                  You can change them in Profile after signing in.
+                </p>
+              </>
+            ) : null}
 
             <p className="cb-auth-alt">
               Already have an account? <Link to="/login">Sign in</Link>

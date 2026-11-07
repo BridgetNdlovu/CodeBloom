@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- Asset catalogue and SVG renderer are one module. */
 import type { ReactNode } from "react";
 import type { AnimationName, AssetCategory, AssetDef } from "./types";
 
@@ -961,7 +962,7 @@ export function AssetArt({
   costume?: number;
   tint?: string;
 }) {
-  let content: ReactNode = null;
+  let content: ReactNode;
   const person = PEOPLE.find((p) => p.key === assetKey);
   const animal = ANIMALS.find((a) => a.key === assetKey);
   const def = ASSET_MAP.get(assetKey);

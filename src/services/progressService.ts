@@ -72,9 +72,9 @@ function toMissionProgress(dto: MissionProgressDto): MissionProgress {
  * Build a progress summary entirely from the API. No mock fallbacks: if the
  * backend cannot answer, the caller shows an error instead of fake numbers.
  */
-export async function getProgress(_learnerId?: string): Promise<ProgressSummary> {
+export async function getProgress(): Promise<ProgressSummary> {
   const [dashboard, map] = await Promise.all([apiGetDashboard(), apiGetMissionMap()]);
-  const records = await apiGetProgressRecords().catch(() => []);
+  const records = await apiGetProgressRecords();
 
   const skillMap = new Map<string, { completed: number; total: number; started: number }>();
   for (const world of map) {

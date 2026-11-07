@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- Navigation metadata is shared with TopBar. */
 import { NavLink } from "react-router-dom";
 import {
   BarChart3,
@@ -12,7 +13,6 @@ import {
   Sprout,
   Trophy,
   Users,
-  Wand2,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { CharacterAvatar } from "../character/Character";
@@ -29,7 +29,6 @@ const STUDENT_ITEMS: NavItem[] = [
   { to: "/app", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/app/missions", label: "Explore Missions", icon: Compass },
   { to: "/app/games", label: "Game Library", icon: Gamepad2 },
-  { to: "/app/studio", label: "Game Studio", icon: Wand2 },
   { to: "/app/assignments", label: "Assignments", icon: ClipboardList },
   { to: "/app/projects", label: "My Projects", icon: Sprout },
   { to: "/app/achievements", label: "Achievements", icon: Trophy },

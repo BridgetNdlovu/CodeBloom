@@ -115,12 +115,10 @@ export function GameStudio() {
   // ------------------------------------------------------------------ load
   useEffect(() => {
     if (!numericId) {
-      setProject((current) => current ?? blankProject());
-      setLoading(false);
-      setLoadError(null);
       return;
     }
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Project ID changes need a visible loading state.
     setLoading(true);
     setLoadError(null);
     setUpgraded(false);

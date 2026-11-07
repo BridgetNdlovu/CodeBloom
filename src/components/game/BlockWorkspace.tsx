@@ -53,7 +53,9 @@ function BlockWorkspaceInner(
   const loadedRef = useRef<string>("");
   const suppressRef = useRef(false);
   const dirtyRef = useRef(onDirty);
-  dirtyRef.current = onDirty;
+  useEffect(() => {
+    dirtyRef.current = onDirty;
+  }, [onDirty]);
   const allowedKey = allowedBlocks ? allowedBlocks.join("|") : "";
 
   useEffect(() => {
@@ -62,7 +64,7 @@ function BlockWorkspaceInner(
     if (!container) return;
 
     const workspace = Blockly.inject(container, {
-      toolbox: toolboxXml(allowedBlocks),
+      toolbox: toolboxXml(allowedKey ? allowedKey.split("|") : null),
       renderer: "zelos",
       sounds: false,
       readOnly,
@@ -79,19 +81,6 @@ function BlockWorkspaceInner(
       dirtyRef.current?.();
     };
     workspace.addChangeListener(onChange);
-
-    const loadInitial = (xml: string) => {
-      suppressRef.current = true;
-      xmlToWorkspace(xml, workspace);
-      loadedRef.current = xml;
-      window.setTimeout(() => {
-        suppressRef.current = false;
-      }, 0);
-    };
-
-    if (initialXml) {
-      loadInitial(initialXml);
-    }
 
     const observer = new ResizeObserver(() => {
       Blockly.svgResize(workspace);
@@ -121,7 +110,7 @@ function BlockWorkspaceInner(
     window.setTimeout(() => {
       suppressRef.current = false;
     }, 0);
-  }, [initialXml]);
+  }, [initialXml, allowedKey]);
 
   useImperativeHandle(
     ref,

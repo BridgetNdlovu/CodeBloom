@@ -13,6 +13,7 @@ import {
   logoutUser,
   getCurrentUser,
   getStudentProfile,
+  exchangeFirebaseToken,
   updateCharacter as apiUpdateCharacter,
   updatePreferences as apiUpdatePreferences,
   type AuthUser,
@@ -21,6 +22,7 @@ import {
   type RegisterInput,
   type LoginInput,
 } from "./apiClient";
+import * as firebaseClient from "./firebase";
 
 export type { RegisterInput, LoginInput } from "./apiClient";
 
@@ -119,6 +121,55 @@ export async function loginLearner(input: LoginInput): Promise<Learner> {
   }
 }
 
+/**
+ * Exchanges a Firebase ID token for the normal CodeBloom cookie session. The API
+ * verifies the token server-side and resolves the role from SQL Server, so a
+ * frontend user can never grant themselves instructor or admin access.
+ */
+export async function loginWithFirebaseToken(idToken: string): Promise<Learner> {
+  try {
+    const result = await exchangeFirebaseToken(idToken);
+    const profile =
+      result.user.role === "student"
+        ? await getStudentProfile().catch(() => undefined)
+        : undefined;
+    return toPublic(result.user, profile);
+  } catch (error) {
+    throw toAuthError(error, "Unable to sign in with Google.");
+  }
+}
+
+/**
+ * Starts Google sign-in. Returns the signed-in learner, or null when the browser
+ * followed a redirect and the result will be completed on the next page load.
+ */
+export async function signInWithGoogle(): Promise<Learner | null> {
+  try {
+    const result = await firebaseClient.signInWithGoogle();
+    if ("redirecting" in result) return null;
+    return await loginWithFirebaseToken(result.idToken);
+  } catch (error) {
+    if (error instanceof AuthError) throw error;
+    throw new AuthError(firebaseClient.describeFirebaseError(error), 0);
+  }
+}
+
+/**
+ * Completes a Google redirect sign-in. Safe to call on every app start: it returns
+ * null when there is no redirect result.
+ */
+export async function completeFirebaseRedirect(): Promise<Learner | null> {
+  try {
+    const idToken = await firebaseClient.completeGoogleRedirect();
+    if (!idToken) return null;
+    return await loginWithFirebaseToken(idToken);
+  } catch {
+    // A stale or malformed redirect result must not prevent the normal cookie
+    // session (and local login form) from working.
+    return null;
+  }
+}
+
 export async function logoutLearner(): Promise<void> {
   try {
     await logoutUser();
@@ -126,6 +177,7 @@ export async function logoutLearner(): Promise<void> {
     /* The cookie is HttpOnly; if the request fails the session may still be
        valid server-side, but we always clear local state after sign-out. */
   }
+  await firebaseClient.signOutFirebase();
 }
 
 export async function getCurrentLearner(): Promise<Learner | null> {

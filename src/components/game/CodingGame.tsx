@@ -55,7 +55,7 @@ export function CodingGame() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
   const cancelRef = useRef(false);
-  const startedAtRef = useRef<number>(Date.now());
+  const startedAtRef = useRef<number>(0);
 
   const [mission, setMission] = useState<MissionDetailDto | null>(null);
   const [config, setConfig] = useState<GameConfig>(DEFAULT_GAME_CONFIG);

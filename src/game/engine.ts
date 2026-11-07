@@ -915,7 +915,7 @@ export class SceneRuntime {
         while (
           !this.aborted &&
           this.state.status === "running" &&
-          !Boolean(this.evalInput(node.inputs.CONDITION)) &&
+          !this.evalInput(node.inputs.CONDITION) &&
           guard < 1000
         ) {
           guard += 1;
@@ -925,13 +925,13 @@ export class SceneRuntime {
         return;
       }
       case "control_if": {
-        if (Boolean(this.evalInput(node.inputs.CONDITION))) {
+        if (this.evalInput(node.inputs.CONDITION)) {
           await this.execSeq(node.body);
         }
         return;
       }
       case "control_if_else": {
-        if (Boolean(this.evalInput(node.inputs.CONDITION))) {
+        if (this.evalInput(node.inputs.CONDITION)) {
           await this.execSeq(node.body);
         } else {
           await this.execSeq(node.body2);

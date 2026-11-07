@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- Background catalogue and renderer are one module. */
 import { useId } from "react";
 import type { BackgroundDef } from "./types";
 

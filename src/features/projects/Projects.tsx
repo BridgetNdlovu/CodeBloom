@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Pencil, Plus, Trash2, Wand2 } from "lucide-react";
+import { Gamepad2, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { Badge, EmptyState, PageHeader } from "../../components/ui/inputs";
 import { SceneStage } from "../../components/game/SceneStage";
@@ -23,6 +23,7 @@ export function Projects() {
 
   useEffect(() => {
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Show pending state for explicit reloads.
     setLoading(true);
     setError(undefined);
     async function load() {
@@ -72,16 +73,16 @@ export function Projects() {
       <div className="cb-container">
         <PageHeader
           title="My Projects"
-          subtitle="Your studio games and written coding projects, saved to your account."
+          subtitle="Your saved projects and coding notes."
           actions={
             <>
               <Button variant="secondary" onClick={() => navigate("/app/projects/new")}>
                 <Plus size={18} aria-hidden />
-                New Writing Project
+                New Project
               </Button>
-              <Button onClick={() => navigate("/app/studio")}>
-                <Wand2 size={18} aria-hidden />
-                New Game
+              <Button onClick={() => navigate("/app/games")}>
+                <Gamepad2 size={18} aria-hidden />
+                Browse Games
               </Button>
             </>
           }
@@ -128,9 +129,9 @@ export function Projects() {
                   <div className="cb-hero-actions" style={{ marginTop: "var(--cb-space-4)" }}>
                     {game ? (
                       <>
-                        <Link to={`/app/studio/${p.id}`} className="cb-btn cb-btn-primary cb-btn-sm">
-                          <Wand2 size={16} aria-hidden />
-                          Open in Studio
+                        <Link to="/app/games" className="cb-btn cb-btn-primary cb-btn-sm">
+                          <Gamepad2 size={16} aria-hidden />
+                          Browse Games
                         </Link>
                         <Link to={`/app/projects/${p.id}`} className="cb-btn cb-btn-secondary cb-btn-sm">
                           <Pencil size={16} aria-hidden />

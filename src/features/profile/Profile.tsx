@@ -25,6 +25,7 @@ export function Profile() {
 
   useEffect(() => {
     if (!learnerId || !isStudent) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Non-students do not need a profile-data loading state.
       setLoading(false);
       return;
     }

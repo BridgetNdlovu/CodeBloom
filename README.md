@@ -74,8 +74,9 @@ and SSL as active, the current probes resolve DNS but the HTTP root serves Somee
 return 404, and HTTPS resets from this environment. The API is not yet publicly
 serving its routes.
 
-The API host must allow the exact Vercel frontend origin via
-`Cors:AllowedOrigins` (environment variable `Cors__AllowedOrigins__0`); make sure the
+The API host must allow the Vercel frontend origin
+`https://codebloom-km3e.vercel.app` via `Cors:AllowedOrigins` (environment variable
+`Cors__AllowedOrigins__0`); make sure the
 production configuration includes the deployed frontend origin and does not rely on
 the local-only origins from the base settings. Since
 authentication uses credentialed HttpOnly cookies, HTTPS and compatible cookie
